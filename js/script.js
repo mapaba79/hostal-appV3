@@ -6,18 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const formAdicionarHospede = document.getElementById('form-adicionar-hospede');
 
     const listaQuartos = document.getElementById('lista-quartos');
-    // Dados fixos para quartos (poderiam vir de alguma forma de armazenamento local)
     const quartos = [
-        { id: 1, nome: 'Quarto Privado 1' },
-        { id: 2, nome: 'Quarto Privado 2' },
-        { id: 3, nome: 'Quarto Privado 3' },
-        { id: 4, nome: 'Quarto Privado 4' },
-        { id: 5, nome: 'Quarto Privado 5' },
-        { id: 6, nome: 'Quarto Privado 6' },
+        { id: 1, nome: 'Quarto Privado 1', tipo: 'privado' },
+        { id: 2, nome: 'Quarto Privado 2', tipo: 'privado' },
+        { id: 3, nome: 'Quarto Privado 3', tipo: 'privado' },
+        { id: 4, nome: 'Quarto Privado 4', tipo: 'privado' },
+        { id: 5, nome: 'Quarto Privado 5', tipo: 'privado' },
+        { id: 6, nome: 'Quarto Privado 6', tipo: 'privado' },
         { id: 7, nome: 'Quarto Compartilhado', tipo: 'compartilhado', camas: ['1s', '1m', '1i', '2s', '2m', '2i', '3s', '3m', '3i', '4s', '4m', '4i', '5s', '5m', '5i', '6s', '6m', '6i'] },
         { id: 8, nome: 'Quarto dos Voluntários', tipo: 'voluntarios', camas: ['1s', '1m', '1i', '2s', '2m', '2i', '3s', '3m', '3i'] }
     ];
-    renderizarQuartos();
 
     const listaReservas = document.getElementById('lista-reservas');
     const adicionarReservaBtn = document.getElementById('adicionar-reserva-btn');
@@ -34,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarOpcoesHospedes();
     let reservas = carregarReservas();
     renderizarReservas();
+    renderizarQuartos();
 
     // --- Funcionalidades para Hóspedes ---
     adicionarHospedeBtn.addEventListener('click', () => {
@@ -48,7 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const nome = document.getElementById('nome-hospede').value;
         const email = document.getElementById('email-hospede').value;
-        const novoHospede = { id: Date.now(), nome, email };
+        const telefone = document.getElementById('telefone-hospede').value;
+        const nacionalidade = document.getElementById('nacionalidade-hospede').value;
+        const documento = document.getElementById('documento-hospede').value;
+        const novoHospede = { id: Date.now(), nome, email, telefone, nacionalidade, documento };
         hospedes.push(novoHospede);
         salvarHospedes();
         renderizarHospedes();
@@ -61,7 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
         listaHospedes.innerHTML = '';
         hospedes.forEach(hospede => {
             const li = document.createElement('li');
-            li.textContent = `${hospede.nome} (${hospede.email || 'Sem email'})`;
+            let detalhes = `${hospede.nome}`;
+            if (hospede.email) detalhes += ` (${hospede.email})`;
+            if (hospede.telefone) detalhes += ` - Tel: ${hospede.telefone}`;
+            if (hospede.nacionalidade) detalhes += ` - Nac: ${hospede.nacionalidade}`;
+            if (hospede.documento) detalhes += ` - Doc: ${hospede.documento}`;
+            li.textContent = detalhes;
             listaHospedes.appendChild(li);
         });
     }
@@ -91,8 +98,44 @@ document.addEventListener('DOMContentLoaded', () => {
         quartos.forEach(quarto => {
             const li = document.createElement('li');
             li.textContent = quarto.nome;
+
+            if (quarto.tipo === 'privado' && isQuartoOcupado(quarto.nome)) {
+                li.innerHTML = `<span class="ocupado">${quarto.nome} (Ocupado)</span>`;
+            } else if (quarto.camas) {
+                const camasOcupadas = reservas.filter(reserva => reserva.quarto === quarto.nome).map(reserva => reserva.quartoCama ? reserva.quartoCama.split('-')[1] : null).filter(cama => cama);
+                const camasLivres = quarto.camas.filter(cama => !camasOcupadas.includes(cama));
+
+                const spanCamas = document.createElement('span');
+                spanCamas.style.display = 'block';
+                spanCamas.style.marginLeft = '10px';
+                spanCamas.style.fontSize = '0.9em';
+
+                if (camasLivres.length > 0) {
+                    const spanLivres = document.createElement('span');
+                    spanLivres.className = 'livre';
+                    spanLivres.textContent = `Livres: ${camasLivres.join(', ')}`;
+                    spanCamas.appendChild(spanLivres);
+                }
+
+                if (camasOcupadas.length > 0) {
+                    const spanOcupadas = document.createElement('span');
+                    spanOcupadas.className = 'ocupado';
+                    spanOcupadas.textContent = `Ocupadas: ${camasOcupadas.join(', ')}`;
+                    if (camasLivres.length > 0) {
+                        const separator = document.createElement('span');
+                        separator.textContent = ' | ';
+                        spanCamas.appendChild(separator);
+                    }
+                    spanCamas.appendChild(spanOcupadas);
+                }
+                li.appendChild(spanCamas);
+            }
             listaQuartos.appendChild(li);
         });
+    }
+
+    function isQuartoOcupado(nomeQuarto) {
+        return reservas.some(reserva => reserva.quarto === nomeQuarto && !reserva.quartoCama);
     }
 
     // --- Funcionalidades para Reservas ---
@@ -111,13 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (quartoSelecionado && (quartoSelecionado.tipo === 'compartilhado' || quartoSelecionado.tipo === 'voluntarios')) {
             camasContainer.style.display = 'block';
             camaReservaSelect.innerHTML = '<option value="" disabled selected>Selecione uma cama</option>';
+            const camasOcupadasNoQuarto = reservas.filter(reserva => reserva.quarto === quartoSelecionado.nome).map(reserva => reserva.quartoCama ? reserva.quartoCama.split('-')[1] : null).filter(cama => cama);
+
             quartoSelecionado.camas.forEach(cama => {
                 const option = document.createElement('option');
                 option.value = `${quartoSelecionado.nome}-${cama}`;
                 option.textContent = cama;
-                // Desabilitar camas já reservadas
-                const camaReservada = reservas.some(reserva => reserva.quartoCama === `${quartoSelecionado.nome}-${cama}`);
-                option.disabled = camaReservada;
+                option.disabled = camasOcupadasNoQuarto.includes(cama);
                 camaReservaSelect.appendChild(option);
             });
         } else {
@@ -149,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reservas.push(novaReserva);
             salvarReservas();
             renderizarReservas();
+            renderizarQuartos();
             formAdicionarReserva.reset();
             camasContainer.style.display = 'none';
             modalAdicionarReserva.style.display = 'none';
@@ -185,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reservas.splice(reservaId, 1);
             salvarReservas();
             renderizarReservas();
-            // Atualizar as opções de camas no modal de reserva se estiver aberto
+            renderizarQuartos();
             if (modalAdicionarReserva.style.display === 'block' && quartoReservaSelect.value) {
                 quartoReservaSelect.dispatchEvent(new Event('change'));
             }
@@ -199,6 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function carregarReservas() {
         const reservasSalvas = localStorage.getItem('reservas');
         return reservasSalvas ? JSON.parse(reservasSalvas) : [];
+    }
+
+    function salvarHospedes() {
+        localStorage.setItem('hospedes', JSON.stringify(hospedes));
+    }
+
+    function carregarHospedes() {
+        const hospedesSalvos = localStorage.getItem('hospedes');
+        return hospedesSalvos ? JSON.parse(hospedesSalvos) : [];
     }
 
     // Fechar modal ao clicar fora

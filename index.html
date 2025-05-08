@@ -4,31 +4,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerenciamento de Hostel</title>
+  <title>Hostal Casa Paradiso</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <header>
-    <h1>Gerenciamento de Hostel</h1>
+    <h1>Hostal Casa Paradiso</h1>
   </header>
 
   <main>
     <section id="hospedes">
       <h2>Hóspedes</h2>
       <button id="adicionar-hospede-btn">Adicionar Hóspede</button>
-      <ul id="lista-hospedes"></ul>
+      <ul id="lista-hospedes">
+      </ul>
     </section>
 
     <section id="quartos">
       <h2>Quartos</h2>
-      <ul id="lista-quartos"></ul>
+      <ul id="lista-quartos">
+      </ul>
     </section>
 
     <section id="reservas">
       <h2>Reservas</h2>
       <button id="adicionar-reserva-btn">Adicionar Reserva</button>
-      <ul id="lista-reservas"></ul>
+      <ul id="lista-reservas">
+      </ul>
     </section>
 
     <div id="modal-adicionar-hospede" class="modal">
@@ -38,8 +41,19 @@
         <form id="form-adicionar-hospede">
           <label for="nome-hospede">Nome:</label>
           <input type="text" id="nome-hospede" required><br><br>
+
           <label for="email-hospede">Email:</label>
           <input type="email" id="email-hospede"><br><br>
+
+          <label for="telefone-hospede">Telefone:</label>
+          <input type="text" id="telefone-hospede"><br><br>
+
+          <label for="nacionalidade-hospede">Nacionalidade:</label>
+          <input type="text" id="nacionalidade-hospede"><br><br>
+
+          <label for="documento-hospede">Foto do Documento (Nome do Arquivo):</label>
+          <input type="text" id="documento-hospede"><br><br>
+
           <button type="submit">Salvar Hóspede</button>
         </form>
       </div>
@@ -67,8 +81,8 @@
           </select><br><br>
           <div id="camas-container" style="display: none;">
             <label for="cama-reserva">Cama:</label>
-            <select id="cama-reserva"></select>
-            <br><br>
+            <select id="cama-reserva">
+            </select><br><br>
           </div>
           <label for="data-checkin">Data de Check-in:</label>
           <input type="date" id="data-checkin" required><br><br>
@@ -81,7 +95,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Gerenciamento de Hostel</p>
+    <p>&copy; 2025 Hostal Casa Paradiso</p>
   </footer>
 
   <script src="js/script.js"></script>
