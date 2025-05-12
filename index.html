@@ -38,6 +38,7 @@
       <div class="modal-content">
         <span class="fechar-modal">&times;</span>
         <h3>Adicionar Novo Hóspede</h3>
+
         <form id="form-adicionar-hospede">
           <label for="nome-hospede">Nome:</label>
           <input type="text" id="nome-hospede" required><br><br>
@@ -63,11 +64,13 @@
       <div class="modal-content">
         <span class="fechar-modal">&times;</span>
         <h3>Adicionar Nova Reserva</h3>
+
         <form id="form-adicionar-reserva">
           <label for="hospede-reserva">Hóspede:</label>
           <select id="hospede-reserva" required>
           </select><br><br>
           <label for="quarto-reserva">Quarto:</label>
+
           <select id="quarto-reserva" required>
             <option value="" disabled selected>Selecione um quarto</option>
             <option value="1">Quarto Privado 1</option>
@@ -79,15 +82,22 @@
             <option value="7">Quarto Compartilhado</option>
             <option value="8">Quarto dos Voluntários</option>
           </select><br><br>
+
           <div id="camas-container" style="display: none;">
             <label for="cama-reserva">Cama:</label>
             <select id="cama-reserva">
             </select><br><br>
           </div>
+
+          <label for="valor-pago">Valor Pago:</label>
+          <input type="text" id="valor-pago" required><br><br>
+
           <label for="data-checkin">Data de Check-in:</label>
           <input type="date" id="data-checkin" required><br><br>
+
           <label for="data-checkout">Data de Check-out:</label>
           <input type="date" id="data-checkout" required><br><br>
+
           <button type="submit">Salvar Reserva</button>
         </form>
       </div>
