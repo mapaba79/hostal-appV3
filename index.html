@@ -8,7 +8,24 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="usuario-logado">
+  <div id="login-container" class="modal" style="display: block;">
+    <div class="modal-content">
+      <h3>Login</h3>
+      <form id="login-form">
+        <label for="usuario">Usuário:</label>
+        <input type="text" id="usuario" required>
+
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" required>
+
+        <button type="submit">Entrar</button>
+      </form>
+      <p id="login-erro" style="color: #e74c3c; display: 
+        none;">Usuário ou senha inválidos.</p>
+    </div>
+  </div>
+
   <header>
     <h1>Hostal Casa Paradiso</h1>
   </header>
@@ -89,14 +106,14 @@
             </select><br><br>
           </div>
 
-          <label for="valor-pago">Valor Pago:</label>
-          <input type="text" id="valor-pago" required><br><br>
-
           <label for="data-checkin">Data de Check-in:</label>
           <input type="date" id="data-checkin" required><br><br>
 
           <label for="data-checkout">Data de Check-out:</label>
           <input type="date" id="data-checkout" required><br><br>
+
+          <label for="valor-pago">Valor Pago:</label>
+          <input type="number" id="valor-pago" step="0.01"><br><br>
 
           <button type="submit">Salvar Reserva</button>
         </form>
