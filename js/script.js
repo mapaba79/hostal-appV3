@@ -49,12 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formAdicionarHospede.addEventListener('submit', (event) => {
         event.preventDefault();
         const nome = document.getElementById('nome-hospede').value;
-        const email = document.getElementById('email-hospede').value;
-        const telefone = document.getElementById('telefone-hospede').value;
         const nacionalidade = document.getElementById('nacionalidade-hospede').value;
-        const documento = document.getElementById('documento-hospede').value;
-        const novoHospede = { id: Date.now(), nome, email, telefone, 
-            nacionalidade, documento };
+        const novoHospede = { id: Date.now(), nome, nacionalidade };
         hospedes.push(novoHospede);
         salvarHospedes();
         renderizarHospedes();
@@ -68,10 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hospedes.forEach(hospede => {
             const li = document.createElement('li');
             let detalhes = `${hospede.nome}`;
-            if (hospede.email) detalhes += ` (${hospede.email})`;
-            if (hospede.telefone) detalhes += ` - Tel: ${hospede.telefone}`;
-            if (hospede.nacionalidade) detalhes += ` - Nac: ${hospede.nacionalidade}`;
-            if (hospede.documento) detalhes += ` - Doc: ${hospede.documento}`;
+            if (hospede.nacionalidade) detalhes += ` - ${hospede.nacionalidade}`;
             li.textContent = detalhes;
             listaHospedes.appendChild(li);
         });
